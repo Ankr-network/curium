@@ -17,4 +17,5 @@ require (
 	github.com/tendermint/tm-db v0.5.1
 	github.com/wenxiang/go-nestedjson v0.0.0-20150910062500-11a6c4340577
 	golang.org/x/net v0.0.0-20200513185701-a91f0712d120 // indirect
+	github.com/ethereum/go-ethereum v1.10.4
 )
