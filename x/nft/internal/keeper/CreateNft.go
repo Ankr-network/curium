@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/anacrolix/torrent/metainfo"
-	"github.com/bluzelle/curium/x/nft/types"
+	"github.com/bluzelle/curium/x/nft/internal/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/zeebo/bencode"
@@ -13,11 +13,10 @@ import (
 	"regexp"
 )
 
-func (k msgServer) CreateNft(goCtx context.Context, msg *types.MsgCreateNft) (*types.MsgCreateNftResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
+func (k Keeper) CreateNft(goCtx sdk.Context, msg *types.MsgCreateNft) (*types.MsgCreateNftResponse, error) {
 
 	k.AppendNft(
-		ctx,
+		goCtx,
 		msg.Creator,
 		msg.Meta,
 		msg.Mime,

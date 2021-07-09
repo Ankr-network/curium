@@ -18,4 +18,6 @@ require (
 	github.com/wenxiang/go-nestedjson v0.0.0-20150910062500-11a6c4340577
 	golang.org/x/net v0.0.0-20200513185701-a91f0712d120 // indirect
 	github.com/ethereum/go-ethereum v1.10.4
+	github.com/zeebo/bencode v1.0.0
+	github.com/anacrolix/torrent v1.28.0
 )
