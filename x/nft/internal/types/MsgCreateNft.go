@@ -5,8 +5,6 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-const RouterKey = ModuleName
-
 type MsgCreateNft struct {
 	Id      string
 	Hash    string

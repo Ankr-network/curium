@@ -17,6 +17,7 @@ package app
 import (
 	"encoding/json"
 	"github.com/bluzelle/curium/x/aggregator"
+	"github.com/bluzelle/curium/x/nft"
 	"github.com/bluzelle/curium/x/oracle"
 	"math"
 	"os"
@@ -139,7 +140,7 @@ type CRUDApp struct {
 	oracleKeeper   oracle.Keeper
 	faucetKeeper   faucet.Keeper
 	aggKeeper      aggregator.Keeper
-
+	nftKeeper 	   nft.Keeper
 	// Module Manager
 	mm *module.Manager
 }
@@ -294,6 +295,8 @@ func NewCRUDApp(
 		5*time.Minute,
 		keys[faucet.StoreKey],
 		app.cdc)
+
+	app.nftKeeper = nft.New
 
 	// check flags...
 	bluzelleCrud := IsCrudEnabled(DefaultNodeHome)
