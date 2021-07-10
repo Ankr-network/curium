@@ -19,8 +19,11 @@ import (
 	"github.com/bluzelle/curium/x/aggregator"
 	"github.com/bluzelle/curium/x/nft"
 	"github.com/bluzelle/curium/x/oracle"
+	"github.com/cosmos/cosmos-sdk/client/flags"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"math"
 	"os"
+	"strconv"
 	"time"
 
 	appAnte "github.com/bluzelle/curium/app/ante"
@@ -110,6 +113,36 @@ func IsCrudEnabled(nodeHome string) bool {
 	return enabled
 }
 
+func getNftFileDir (nodeHome string) (string, error) {
+	viper.SetConfigName("app")
+	viper.SetConfigType("toml")
+	viper.AddConfigPath(nodeHome + "/config/")
+
+	if viper.ReadInConfig() == nil {
+
+		if viper.IsSet("nft-file-dir") {
+			return viper.GetString("nft-file-dir"), nil
+		}
+
+	}
+	return "", sdkerrors.New("crud", 1, "No nft file directory specified in app.toml")
+}
+
+func getNftP2PPort (nodeHome string) (string, error) {
+	viper.SetConfigName("app")
+	viper.SetConfigType("toml")
+	viper.AddConfigPath(nodeHome + "/config/")
+
+	if viper.ReadInConfig() == nil {
+
+		if viper.IsSet("nft-p2p-dir") {
+			return viper.GetString("nft-p2p-dir"), nil
+		}
+
+	}
+	return "", sdkerrors.New("crud", 1, "No nft p2p port specified in app.toml")
+}
+
 func MakeCodec() *codec.Codec {
 	var cdc = codec.New()
 	ModuleBasics.RegisterCodec(cdc)
@@ -140,7 +173,7 @@ type CRUDApp struct {
 	oracleKeeper   oracle.Keeper
 	faucetKeeper   faucet.Keeper
 	aggKeeper      aggregator.Keeper
-	nftKeeper 	   nft.Keeper
+	nftKeeper 	   *nft.Keeper
 	// Module Manager
 	mm *module.Manager
 }
@@ -296,7 +329,18 @@ func NewCRUDApp(
 		keys[faucet.StoreKey],
 		app.cdc)
 
-	app.nftKeeper = nft.New
+	nftFileDir, _ := getNftFileDir(DefaultNodeHome)
+	nft2P2pPort, _ := getNftP2PPort(DefaultNodeHome)
+	nftP2PPort, _  := strconv.Atoi(nft2P2pPort)
+
+	app.nftKeeper = nft.NewKeeper(
+		app.cdc,
+		keys[nft.StoreKey],
+		keys[nft.MemStoreKey],
+		flags.FlagHome + "/" + nftFileDir,
+		nftP2PPort,
+		DefaultNodeHome,
+		)
 
 	// check flags...
 	bluzelleCrud := IsCrudEnabled(DefaultNodeHome)
@@ -316,6 +360,7 @@ func NewCRUDApp(
 		staking.NewAppModule(app.stakingKeeper, app.accountKeeper, app.supplyKeeper),
 		oracle.NewAppModule(app.oracleKeeper),
 		aggregator.NewAppModule(app.aggKeeper),
+		nft.NewAppModule(*app.nftKeeper),
 	)
 
 	app.mm.SetOrderBeginBlockers(distr.ModuleName, slashing.ModuleName, oracle.ModuleName)

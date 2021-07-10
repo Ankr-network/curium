@@ -2,7 +2,7 @@ package keeper
 
 import (
 	"encoding/binary"
-	"github.com/bluzelle/curium/x/nft/internal/types"
+	types2 "github.com/bluzelle/curium/x/nft/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -17,7 +17,7 @@ func (k Keeper) AppendNft(
 	hash string,
 ) {
 	// Create the nft
-	var nft = types.Nft{
+	var nft = types2.Nft{
 		Creator: creator,
 		Id:      id,
 		Hash:    hash,
@@ -25,29 +25,29 @@ func (k Keeper) AppendNft(
 		Mime:    mime,
 	}
 
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.NftKey))
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types2.KeyPrefix(types2.NftKey))
 	value := k.cdc.MustMarshalBinaryBare(&nft)
 	store.Set(GetNftIDBytes(nft.Id), value)
 }
 
 // SetNft set a specific nft in the store
-func (k Keeper) SetNft(ctx sdk.Context, nft types.Nft) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.NftKey))
+func (k Keeper) SetNft(ctx sdk.Context, nft types2.Nft) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types2.KeyPrefix(types2.NftKey))
 	b := k.cdc.MustMarshalBinaryBare(&nft)
 	store.Set(GetNftIDBytes(nft.Id), b)
 }
 
 // GetNft returns a nft from its id
-func (k Keeper) GetNft(ctx sdk.Context, id string) types.Nft {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.NftKey))
-	var nft types.Nft
+func (k Keeper) GetNft(ctx sdk.Context, id string) types2.Nft {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types2.KeyPrefix(types2.NftKey))
+	var nft types2.Nft
 	k.cdc.MustUnmarshalBinaryBare(store.Get(GetNftIDBytes(id)), &nft)
 	return nft
 }
 
 // HasNft checks if the nft exists in the store
 func (k Keeper) HasNft(ctx sdk.Context, id string) bool {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.NftKey))
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types2.KeyPrefix(types2.NftKey))
 	return store.Has(GetNftIDBytes(id))
 }
 
@@ -58,19 +58,19 @@ func (k Keeper) GetNftOwner(ctx sdk.Context, id string) string {
 
 // RemoveNft removes a nft from the store
 func (k Keeper) RemoveNft(ctx sdk.Context, id string) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.NftKey))
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types2.KeyPrefix(types2.NftKey))
 	store.Delete(GetNftIDBytes(id))
 }
 
 // GetAllNft returns all nft
-func (k Keeper) GetAllNft(ctx sdk.Context) (list []types.Nft) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.NftKey))
+func (k Keeper) GetAllNft(ctx sdk.Context) (list []types2.Nft) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types2.KeyPrefix(types2.NftKey))
 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
-		var val types.Nft
+		var val types2.Nft
 		k.cdc.MustUnmarshalBinaryBare(iterator.Value(), &val)
 		list = append(list, val)
 	}

@@ -1,15 +1,17 @@
 package nft
 
 import (
-	"github.com/bluzelle/curium/x/oracle/keeper"
-	"github.com/bluzelle/curium/x/oracle/types"
+	keeper2 "github.com/bluzelle/curium/x/nft/keeper"
+	types2 "github.com/bluzelle/curium/x/nft/types"
 )
 
-const (
-	ModuleName     = types.ModuleName
-	StoreKey = types.StoreKey
-)
+var (
+	ModuleName     = types2.ModuleName
+	StoreKey = types2.StoreKey
+	MemStoreKey = types2.MemStoreKey
+	NewKeeper     = keeper2.NewKeeper
 
+)
 type (
-	Keeper          = keeper.Keeper
+	Keeper  = keeper2.Keeper
 )

@@ -20,7 +20,7 @@ import (
 )
 
 // RegisterRoutes - Central function to define routes that get registered by the main application
-func RegisterRoutes(cliCtx context.CLIContext, r *mux.Router, storeName string) {
+func RegisterRoutes(cliCtx context.CLIContext, r *mux.Router) {
 	r.HandleFunc("/abci-query", AbciQueryHandler(cliCtx)).Methods("POST")
 	r.HandleFunc("/nft/upload/{hash}/{chunkNum}", uploadNftHandler(cliCtx)).Methods("POST")
 }

@@ -18,10 +18,9 @@ func DefaultGenesisState() *GenesisState {
 	}
 }
 
-// Validate performs basic genesis state validation returning an error upon any
+// ValidateGenesis performs basic genesis state validation returning an error upon any
 // failure.
-func (gs GenesisState) Validate() error {
-	// this line is used by starport scaffolding # ibc/genesistype/validate
+func (gs GenesisState) ValidateGenesis() error {
 
 	// this line is used by starport scaffolding # genesis/types/validate
 	// Check for duplicated ID in nft

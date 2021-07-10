@@ -15,23 +15,15 @@
 package nft
 
 import (
-	"encoding/json"
 	"fmt"
-	"github.com/bluzelle/curium/x/nft/internal/keeper"
-	"github.com/bluzelle/curium/x/nft/internal/types"
+	keeper2 "github.com/bluzelle/curium/x/nft/keeper"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-func NewHandler(keeper keeper.Keeper) sdk.Handler {
+func NewHandler(keeper keeper2.Keeper) sdk.Handler {
 	return func(ctx sdk.Context, msg sdk.Msg) (*sdk.Result, error) {
 		switch msg := msg.(type) {
-
-		case *types.MsgCreateNft:
-			res, err := keeper.CreateNft(sdk.WrapSDKContext(ctx), msg)
-			return sdk.WrapServiceResult(ctx, res, err)
-
-
 		default:
 			return nil, sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, fmt.Sprintf("Unrecognized nft msg type: %v", msg.Type()))
 		}
