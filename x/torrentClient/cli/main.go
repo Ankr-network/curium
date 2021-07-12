@@ -29,7 +29,7 @@ func main() {
 		panic(err)
 	}
 
-	leacher.AddPeer("127.0.0.1", seederPort)
+	leacher.AddPeer("id", "127.0.0.1", seederPort)
 	leacher.RetrieveFile(meta)
 	// Watch the progress
 	for range time.Tick(time.Second) {
