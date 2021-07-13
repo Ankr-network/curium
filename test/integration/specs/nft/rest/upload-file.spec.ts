@@ -14,16 +14,32 @@ describe('file upload', function()  {
     beforeEach(() => bz = getBzClient());
 
 
-    it('should create a directory nft-upload in .blzd', () => {
-        return fetch(`http://localhost:1317/nft/upload/someHash/1`, {
+    it('should create a directory nft-upload/vendor in .blzd', () => {
+        return fetch(`http://localhost:1317/nft/upload/Mintable/someHash/1`, {
             method: 'POST',
             body: "1"
         })
-            .then(() => fs.existsSync(path.resolve(__dirname, `${process.env.HOME}/.blzd/nft-upload`)))
+            .then(() => fs.existsSync(path.resolve(__dirname, `${process.env.HOME}/.blzd/nft-upload/Mintable`)))
             .then(resp => expect(resp).to.be.true)
     });
 
-    it('should create a file containing the chunk number', () => {
+    it('should allow multiple simultaneous uploads to a node', () => {
+        return Promise.all([
+            fetch(`http://localhost:1317/nft/upload/Mintable/mintableHash/1`, {
+            method: 'POST',
+            body: "1"
+        }), fetch(`http://localhost:1317/nft/upload/Crypto/cryptoHash/1`, {
+                method: 'POST',
+                body: "1"
+            }),
+        ])
+            .then(() => fs.existsSync(path.resolve(__dirname, `${process.env.HOME}/.blzd/nft-upload/Mintable`)))
+            .then(resp => expect(resp).to.be.true)
+            .then(() => fs.existsSync(path.resolve(__dirname, `${process.env.HOME}/.blzd/nft-upload/Crypto`)))
+            .then(resp => expect(resp).to.be.true)
+    });
+
+    it('should chunk up a large file', () => {
         let hash = Date.now().toString();
         return fetch(`http://localhost:1317/nft/upload/${hash}/1`, {
             method: 'POST',
