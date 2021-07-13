@@ -17,6 +17,7 @@ package app
 import (
 	"encoding/json"
 	"github.com/bluzelle/curium/x/aggregator"
+	"github.com/bluzelle/curium/x/curium"
 	"github.com/bluzelle/curium/x/nft"
 	"github.com/bluzelle/curium/x/oracle"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -86,6 +87,7 @@ var (
 		oracle.AppModuleBasic{},
 		aggregator.AppModuleBasic{},
 		nft.AppModuleBasic{},
+		curium.AppModuleBasic{},
 	)
 
 	// account permissions
@@ -126,7 +128,7 @@ func getNftFileDir (nodeHome string) (string, error) {
 		}
 
 	}
-	return "", sdkerrors.New("crud", 1, "No nft file directory specified in app.toml")
+	return "", sdkerrors.New("nft", 1, "No nft file directory specified in app.toml")
 }
 
 func getNftP2PPort (nodeHome string) (string, error) {
@@ -141,7 +143,22 @@ func getNftP2PPort (nodeHome string) (string, error) {
 		}
 
 	}
-	return "", sdkerrors.New("crud", 1, "No nft p2p port specified in app.toml")
+	return "", sdkerrors.New("nft", 1, "No nft p2p port specified in app.toml")
+}
+
+func getRpcLadder (nodeHome string) (string, error) {
+	viper.SetConfigName("config")
+	viper.SetConfigType("toml")
+	viper.AddConfigPath(nodeHome + "/config/")
+
+	if viper.ReadInConfig() == nil {
+
+		if viper.IsSet("rpc.laddr") {
+			return viper.GetString("rpc.laddr"), nil
+		}
+
+	}
+	return "", sdkerrors.New("nft", 1, "No rpc laddr url specified in config.toml")
 }
 
 func MakeCodec() *codec.Codec {
@@ -175,6 +192,7 @@ type CRUDApp struct {
 	faucetKeeper   faucet.Keeper
 	aggKeeper      aggregator.Keeper
 	nftKeeper 	   *nft.Keeper
+	curiumKeeper   *curium.Keeper
 	// Module Manager
 	mm *module.Manager
 }
@@ -201,6 +219,7 @@ func NewCRUDApp(
 		faucet.StoreKey, crud.LeaseKey, crud.OwnerKey,
 		oracle.StoreKey,aggregator.StoreKey,
 		nft.StoreKey, nft.MemStoreKey,
+		curium.StoreKey, curium.MemStoreKey,
 	)
 
 	tkeys := sdk.NewTransientStoreKeys(staking.TStoreKey, params.TStoreKey)
@@ -331,6 +350,15 @@ func NewCRUDApp(
 		keys[faucet.StoreKey],
 		app.cdc)
 
+	laddr, _ := getRpcLadder(DefaultNodeHome)
+
+	app.curiumKeeper = curium.NewKeeper(
+		app.cdc,
+		keys[curium.StoreKey],
+		keys[curium.MemStoreKey],
+		laddr,
+		)
+
 	nftFileDir, _ := getNftFileDir(DefaultNodeHome)
 	nft2P2pPort, _ := getNftP2PPort(DefaultNodeHome)
 	nftP2PPort, _  := strconv.Atoi(nft2P2pPort)
@@ -363,6 +391,7 @@ func NewCRUDApp(
 		oracle.NewAppModule(app.oracleKeeper),
 		aggregator.NewAppModule(app.aggKeeper),
 		nft.NewAppModule(*app.nftKeeper),
+		curium.NewAppModule(*app.curiumKeeper),
 	)
 
 	app.mm.SetOrderBeginBlockers(distr.ModuleName, slashing.ModuleName, oracle.ModuleName)

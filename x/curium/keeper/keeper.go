@@ -16,14 +16,14 @@ import (
 
 type (
 	Keeper struct {
-		cdc      codec.Codec
+		cdc      *codec.Codec
 		storeKey sdk.StoreKey
 		memKey   sdk.StoreKey
 		rpcPort  uint64
 	}
 )
 
-func NewKeeper(cdc codec.Codec, storeKey, memKey sdk.StoreKey, laddr string) *Keeper {
+func NewKeeper(cdc *codec.Codec, storeKey, memKey sdk.StoreKey, laddr string) *Keeper {
 	regex, _ := regexp.Compile(".*:")
 	port, _ := math.ParseUint64(regex.ReplaceAllString(laddr, ""))
 	return &Keeper{
