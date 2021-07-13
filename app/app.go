@@ -17,13 +17,10 @@ package app
 import (
 	"encoding/json"
 	"github.com/bluzelle/curium/x/aggregator"
-	"github.com/bluzelle/curium/x/nft"
 	"github.com/bluzelle/curium/x/oracle"
-	"github.com/cosmos/cosmos-sdk/client/flags"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"math"
 	"os"
-	"strconv"
 	"time"
 
 	appAnte "github.com/bluzelle/curium/app/ante"
@@ -173,7 +170,7 @@ type CRUDApp struct {
 	oracleKeeper   oracle.Keeper
 	faucetKeeper   faucet.Keeper
 	aggKeeper      aggregator.Keeper
-	nftKeeper 	   *nft.Keeper
+	//nftKeeper 	   *nft.Keeper
 	// Module Manager
 	mm *module.Manager
 }
@@ -199,6 +196,7 @@ func NewCRUDApp(
 		tax.StoreKey,
 		faucet.StoreKey, crud.LeaseKey, crud.OwnerKey,
 		oracle.StoreKey,aggregator.StoreKey,
+		//nft.StoreKey, nft.MemStoreKey,
 	)
 
 	tkeys := sdk.NewTransientStoreKeys(staking.TStoreKey, params.TStoreKey)
@@ -329,18 +327,18 @@ func NewCRUDApp(
 		keys[faucet.StoreKey],
 		app.cdc)
 
-	nftFileDir, _ := getNftFileDir(DefaultNodeHome)
-	nft2P2pPort, _ := getNftP2PPort(DefaultNodeHome)
-	nftP2PPort, _  := strconv.Atoi(nft2P2pPort)
-
-	app.nftKeeper = nft.NewKeeper(
-		app.cdc,
-		keys[nft.StoreKey],
-		keys[nft.MemStoreKey],
-		flags.FlagHome + "/" + nftFileDir,
-		nftP2PPort,
-		DefaultNodeHome,
-		)
+	//nftFileDir, _ := getNftFileDir(DefaultNodeHome)
+	//nft2P2pPort, _ := getNftP2PPort(DefaultNodeHome)
+	//nftP2PPort, _  := strconv.Atoi(nft2P2pPort)
+	//
+	//app.nftKeeper = nft.NewKeeper(
+	//	app.cdc,
+	//	keys[nft.StoreKey],
+	//	keys[nft.MemStoreKey],
+	//	flags.FlagHome + "/" + nftFileDir,
+	//	nftP2PPort,
+	//	DefaultNodeHome,
+	//	)
 
 	// check flags...
 	bluzelleCrud := IsCrudEnabled(DefaultNodeHome)
@@ -360,7 +358,7 @@ func NewCRUDApp(
 		staking.NewAppModule(app.stakingKeeper, app.accountKeeper, app.supplyKeeper),
 		oracle.NewAppModule(app.oracleKeeper),
 		aggregator.NewAppModule(app.aggKeeper),
-		nft.NewAppModule(*app.nftKeeper),
+		//nft.NewAppModule(*app.nftKeeper),
 	)
 
 	app.mm.SetOrderBeginBlockers(distr.ModuleName, slashing.ModuleName, oracle.ModuleName)

@@ -4,7 +4,7 @@ go 1.14
 
 require (
 	github.com/anacrolix/torrent v1.28.0
-	github.com/cosmos/cosmos-sdk v0.39.1
+	github.com/cosmos/cosmos-sdk v0.39.2
 	github.com/cosmos/modules/incubator/faucet v0.0.0-20200315124306-c86f71ae76a0
 	github.com/ethereum/go-ethereum v1.10.4
 	github.com/golang/mock v1.4.4

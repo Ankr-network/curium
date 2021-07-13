@@ -5,7 +5,6 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/codec"
 
 	"github.com/bluzelle/curium/x/oracle/types"
@@ -21,11 +20,6 @@ func GetQueryCmd(queryRoute string, cdc *codec.Codec) *cobra.Command {
 		SuggestionsMinimumDistance: 2,
 		RunE:                       client.ValidateCmd,
 	}
-
-	nftQueryCmd.AddCommand(
-		flags.GetCommands(
-		)...,
-	)
 
 	return nftQueryCmd
 }
