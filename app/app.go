@@ -85,6 +85,7 @@ var (
 		faucet.AppModuleBasic{},
 		oracle.AppModuleBasic{},
 		aggregator.AppModuleBasic{},
+		nft.AppModuleBasic{},
 	)
 
 	// account permissions

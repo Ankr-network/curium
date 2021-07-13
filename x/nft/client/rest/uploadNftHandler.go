@@ -10,13 +10,14 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"strings"
 )
 func uploadNftHandler(clientCtx context.CLIContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		hash := mux.Vars(r)["hash"]
 		chunkNum := mux.Vars(r)["chunkNum"]
 
-		uploadPath := clientCtx.HomeDir + "/nft-upload"
+		uploadPath := strings.TrimSuffix(clientCtx.HomeDir, ".blzcli") + ".blzd" + "/nft-upload"
 		os.MkdirAll(uploadPath, os.ModePerm)
 
 		chunkInt, ok := math.ParseUint64(chunkNum)
