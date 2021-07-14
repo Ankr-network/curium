@@ -84,7 +84,7 @@ func getAccountAddress (keyring cryptoKeys.Keybase, from string) (sdk.AccAddress
 	return keyringKeys.GetAddress(), nil
 }
 
-func (reader KeyringReader) getAddress (from string) (sdk.AccAddress, error) {
+func (reader KeyringReader) GetAddress(from string) (sdk.AccAddress, error) {
 	keyring, err := getKeyring(reader.keyringDir)
 
 	if err != nil {
