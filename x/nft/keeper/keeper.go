@@ -18,13 +18,13 @@ type (
 		cdc         *codec.Codec
 		storeKey    sdk.StoreKey
 		memKey      sdk.StoreKey
-		btDirectory string
-		btPort      int
-		homeDir     string
-		msgBroadcaster curium.MsgBroadcaster
+		BtDirectory string
+		BtPort      int
+		HomeDir     string
+		MsgBroadcaster curium.MsgBroadcaster
 		curiumKeeper *curium.Keeper
-		reader *keeper.KeyringReader
-		btClient       *torrentClient.TorrentClient
+		Reader *keeper.KeyringReader
+		BtClient       *torrentClient.TorrentClient
 	}
 )
 
@@ -51,13 +51,13 @@ func NewKeeper (
 		cdc:         cdc,
 		storeKey:    storeKey,
 		memKey:      memKey,
-		btDirectory: btDirectory,
-		btPort:      btPort,
-		homeDir:     homeDir,
-		msgBroadcaster: msgBroadcaster,
+		BtDirectory: btDirectory,
+		BtPort:      btPort,
+		HomeDir:     homeDir,
+		MsgBroadcaster: msgBroadcaster,
 		curiumKeeper: curiumKeeper,
-		reader: reader,
-		btClient: btClient,
+		Reader: reader,
+		BtClient: btClient,
 	}
 }
 
@@ -75,7 +75,7 @@ func (k Keeper) GetPeerStore(ctx sdk.Context) prefix.Store {
 }
 
 func (k Keeper) CheckIsNftAdmin(address string) error {
-	nftAdmin, err := k.reader.GetAddress("nft")
+	nftAdmin, err := k.Reader.GetAddress("nft")
 	if err != nil {
 		return sdkerrors.New("nft", 1, fmt.Sprintf("peer request with invalid admin: %s", err.Error()))
 	}

@@ -69,7 +69,7 @@ func NewKeeper(cdc *codec.Codec, storeKey, memKey sdk.StoreKey, laddr string, ac
 }
 
 func getKeyring (keyringDir string) (cryptoKeys.Keybase, error) {
-	return cryptoKeys.NewKeyring("curium", cryptoKeys.BackendTest, keyringDir, nil)
+	return cryptoKeys.NewKeyring("BluzelleService", cryptoKeys.BackendTest, keyringDir, nil)
 }
 
 

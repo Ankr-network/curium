@@ -8,21 +8,17 @@ import (
 type MsgCreateNft struct {
 	Id      string
 	Hash    string
+	Vendor string
+	UserId string
 	Creator string
 	Mime    string
 	Meta    string
 }
 
-
-func NewMsgCreateNft(id string, hash string, creator string, meta string, mime string) *MsgCreateNft {
-	return &MsgCreateNft{
-		Id:      id,
-		Hash:    hash,
-		Creator: creator,
-		Mime:    mime,
-		Meta:    meta,
-	}
+type MsgCreateNftResponse struct {
+	Id      string
 }
+
 
 func (msg *MsgCreateNft) Route() string {
 	return RouterKey

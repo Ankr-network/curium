@@ -18,7 +18,6 @@ func (k Keeper) AppendNft(
 	meta string,
 	mime string,
 
-
 ) {
 	// Create the nft
 	var nft = types.Nft{

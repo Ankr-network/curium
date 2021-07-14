@@ -377,7 +377,7 @@ func NewCRUDApp(
 		DefaultNodeHome,
 		msgBroadcaster,
 		app.curiumKeeper,
-		curium.NewKeyringReader(DefaultNodeHome),
+		curium.NewKeyringReader(DefaultCLIHome),
 		)
 
 	// check flags...
