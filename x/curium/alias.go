@@ -10,7 +10,6 @@ var (
 	StoreKey = types.StoreKey
 	MemStoreKey = types.MemStoreKey
 	NewKeeper     = keeper.NewKeeper
-	Broadcaster = keeper.NewBroadcaster
 )
 type (
 	Keeper  = keeper.Keeper

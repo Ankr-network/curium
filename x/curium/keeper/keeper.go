@@ -1,7 +1,6 @@
 package keeper
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	cryptoKeys "github.com/cosmos/cosmos-sdk/crypto/keys"
@@ -95,7 +94,26 @@ func pollForTransaction (ctx rpctypes.Context, hash []byte) (*coretypes.ResultTx
 
 }
 
-func (k Keeper) NewMsgBroadcaster(keyringDir string, cdc *codec.Codec, ctx context.Context) MsgBroadcaster {
+func pollTimer (ctx rpctypes.Context, hash []byte, timeout int64) (*coretypes.ResultTx, error) {
+	resultChannel := make(chan *coretypes.ResultTx, 1)
+	errorChannel := make(chan error, 1)
+
+	result, err := pollForTransaction(ctx, hash)
+
+	errorChannel <- err
+	resultChannel <- result
+
+	select {
+		case txResult := <-resultChannel:
+			return txResult, nil
+		case pollingError := <-errorChannel:
+			return nil, pollingError
+		case <-time.After(time.Duration(timeout) * time.Second):
+			return nil, sdkerrors.New("curium", 1, fmt.Sprintf("Could not poll for transaction %s", string(hash)))
+	}
+}
+
+func (k Keeper) NewMsgBroadcaster(keyringDir string, cdc *codec.Codec) MsgBroadcaster {
 	accKeeper := k.accKeeper
 
 	return func(ctx sdk.Context, msgs []sdk.Msg, from string) chan *MsgBroadcasterResponse {
@@ -159,7 +177,7 @@ func (k Keeper) NewMsgBroadcaster(keyringDir string, cdc *codec.Codec, ctx conte
 				return
 			}
 
-			result, err := pollForTransaction(rpcCtx, broadcastResult.Hash)
+			result, err := pollTimer(rpcCtx, broadcastResult.Hash, 20)
 
 			if err != nil {
 				returnError(err)
