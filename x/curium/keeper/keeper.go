@@ -48,6 +48,14 @@ type MsgBroadcasterResponse struct {
 	Error    error
 }
 
+type KeyringReader struct{ keyringDir string }
+
+func NewKeyringReader(keyringDir string) *KeyringReader {
+	return &KeyringReader{
+		keyringDir: keyringDir,
+	}
+}
+
 func NewKeeper(cdc *codec.Codec, storeKey, memKey sdk.StoreKey, laddr string, accKeeper keeper.AccountKeeper) *Keeper {
 	regex, _ := regexp.Compile(".*:")
 	port, _ := math.ParseUint64(regex.ReplaceAllString(laddr, ""))
@@ -74,6 +82,17 @@ func getAccountAddress (keyring cryptoKeys.Keybase, from string) (sdk.AccAddress
 	}
 
 	return keyringKeys.GetAddress(), nil
+}
+
+func (reader KeyringReader) getAddress (from string) (sdk.AccAddress, error) {
+	keyring, err := getKeyring(reader.keyringDir)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return getAccountAddress(keyring, from)
+
 }
 
 func getGasPriceUbnt () (sdk.DecCoins) {

@@ -138,8 +138,8 @@ func getNftP2PPort (nodeHome string) (string, error) {
 
 	if viper.ReadInConfig() == nil {
 
-		if viper.IsSet("nft-p2p-dir") {
-			return viper.GetString("nft-p2p-dir"), nil
+		if viper.IsSet("nft-p2p-port") {
+			return viper.GetString("nft-p2p-port"), nil
 		}
 
 	}
@@ -357,11 +357,16 @@ func NewCRUDApp(
 		keys[curium.StoreKey],
 		keys[curium.MemStoreKey],
 		laddr,
+		app.accountKeeper,
 		)
 
 	nftFileDir, _ := getNftFileDir(DefaultNodeHome)
 	nft2P2pPort, _ := getNftP2PPort(DefaultNodeHome)
 	nftP2PPort, _  := strconv.Atoi(nft2P2pPort)
+
+
+	msgBroadcaster := app.curiumKeeper.NewMsgBroadcaster(DefaultNodeHome, cdc)
+
 
 	app.nftKeeper = nft.NewKeeper(
 		app.cdc,
@@ -370,6 +375,9 @@ func NewCRUDApp(
 		flags.FlagHome + "/" + nftFileDir,
 		nftP2PPort,
 		DefaultNodeHome,
+		msgBroadcaster,
+		app.curiumKeeper,
+		curium.NewKeyringReader(DefaultNodeHome),
 		)
 
 	// check flags...

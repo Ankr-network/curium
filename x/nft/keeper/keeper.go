@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"github.com/bluzelle/curium/x/curium"
+	"github.com/bluzelle/curium/x/curium/keeper"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -13,6 +15,9 @@ type (
 		btDirectory string
 		btPort      int
 		homeDir     string
+		msgBroadcaster curium.MsgBroadcaster
+		curiumKeeper *curium.Keeper
+		reader *keeper.KeyringReader
 	}
 )
 
@@ -23,6 +28,9 @@ func NewKeeper (
 	btDirectory string,
 	btPort int,
 	homeDir string,
+	msgBroadcaster curium.MsgBroadcaster,
+	curiumKeeper *curium.Keeper,
+	reader *keeper.KeyringReader,
 
 ) *Keeper {
 	return &Keeper{
@@ -32,5 +40,8 @@ func NewKeeper (
 		btDirectory: btDirectory,
 		btPort:      btPort,
 		homeDir:     homeDir,
+		msgBroadcaster: msgBroadcaster,
+		curiumKeeper: curiumKeeper,
+		reader: reader,
 	}
 }

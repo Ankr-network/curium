@@ -10,7 +10,11 @@ var (
 	StoreKey = types.StoreKey
 	MemStoreKey = types.MemStoreKey
 	NewKeeper     = keeper.NewKeeper
+	NewKeyringReader = keeper.NewKeyringReader
 )
 type (
 	Keeper  = keeper.Keeper
+	MsgBroadcaster = keeper.MsgBroadcaster
+	MsgBroadcasterResponse = keeper.MsgBroadcasterResponse
+	KeyringReader = keeper.KeyringReader
 )
