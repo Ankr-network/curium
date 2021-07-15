@@ -61,6 +61,10 @@ func NewKeeper (
 	}
 }
 
+func (k Keeper) GetCdc() *codec.Codec {
+	return k.cdc
+}
+
 func ensureNftUserExists(reader *curium.KeyringReader) bool {
 	_, err := reader.GetAddress("nft")
 	return err == nil

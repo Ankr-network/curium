@@ -23,4 +23,5 @@ import (
 func RegisterRoutes(cliCtx context.CLIContext, r *mux.Router) {
 	r.HandleFunc("/abci-query", AbciQueryHandler(cliCtx)).Methods("POST")
 	r.HandleFunc("/nft/upload/{vendor}/{hash}/{chunkNum}", uploadNftHandler(cliCtx)).Methods("POST")
+	r.HandleFunc("/nft/get-nft/{id}", getNftHandler(cliCtx)).Methods("GET")
 }
