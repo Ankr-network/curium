@@ -4,6 +4,14 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
+	"io/ioutil"
+	"net/http"
+	"os"
+	"strconv"
+	"strings"
+	"sync"
+	"time"
+
 	"github.com/bluzelle/curium/x/oracle/keeper"
 	"github.com/bluzelle/curium/x/oracle/types"
 	clientKeys "github.com/cosmos/cosmos-sdk/client/keys"
@@ -16,16 +24,9 @@ import (
 	"github.com/spf13/viper"
 	"github.com/tendermint/tendermint/libs/log"
 	"github.com/tendermint/tendermint/rpc/core"
-	"github.com/tendermint/tendermint/rpc/core/types"
+	coretypes "github.com/tendermint/tendermint/rpc/core/types"
 	rpctypes "github.com/tendermint/tendermint/rpc/jsonrpc/types"
 	nestedJson "github.com/wenxiang/go-nestedjson"
-	"io/ioutil"
-	"net/http"
-	"os"
-	"strconv"
-	"strings"
-	"sync"
-	"time"
 )
 
 var logger = log.NewTMLogger(log.NewSyncWriter(os.Stdout))
@@ -78,12 +79,12 @@ func fetchValues(sources []types.Source) []SourceAndValue {
 				}
 			}()
 			value, _ := fetchSource(source)
-				mutex.Lock()
-				results = append(results, SourceAndValue{
-					source: source,
-					value:  value,
-				})
-				mutex.Unlock()
+			mutex.Lock()
+			results = append(results, SourceAndValue{
+				source: source,
+				value:  value,
+			})
+			mutex.Unlock()
 			wg.Done()
 		}(source)
 	}
@@ -267,7 +268,7 @@ func StartFeeder(oracleKeeper Keeper, accountKeeper auth.AccountKeeper, cdc *cod
 			fmt.Println("panic occurred:", err)
 		}
 	}()
-	waitForCtx()
+	// waitForCtx()
 	RunFeeder(oracleKeeper, accountKeeper, cdc)
 }
 
